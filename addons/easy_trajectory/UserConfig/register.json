@@ -1,0 +1,14 @@
+{
+	"default" : [
+		"res://addons/easy_trajectory/Trajectory/SimpleTrajectory/linear.gd",
+		"res://addons/easy_trajectory/Trajectory/SimpleTrajectory/circle.gd",
+		"res://addons/easy_trajectory/Trajectory/ComplexTrajectory/va.gd",
+		"res://addons/easy_trajectory/Trajectory/ComplexTrajectory/bezier.gd",
+		"res://addons/easy_trajectory/Trajectory/TrajectoryHolder/trajectory_holder.gd",
+		"res://addons/easy_trajectory/Trajectory/TrajectoryHolder/sequence_trajectory_holder.gd",
+		"res://addons/easy_trajectory/Trajectory/TrajectoryHolder/blend_trajectory_holder.gd"
+	],
+	"custom" : [
+		
+	]
+}
