@@ -1,5 +1,7 @@
 # EasyTrajectory
 
+[ENGLISH](readme_en.md)           [简体中文](readme.md)
+
 EasyTrajectory is a **2D scene** plugin for quickly and easily creating trajectories like bullet paths and enemy movements. Written entirely in GDScript, it allows flexible creation of complex trajectories through combination of different trajectory types.
 
 ------

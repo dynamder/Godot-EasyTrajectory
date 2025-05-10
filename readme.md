@@ -1,5 +1,7 @@
 # EasyTrajectory
 
+[ENGLISH](readme_en.md)           [简体中文](readme.md)
+
 EasyTrajectory是一个针对**2D场景**，用于快速，轻松的创建诸如弹道，敌人移动之类的轨迹的插件，完全由GDscript编写。可以通过不同轨迹类型的组合，简单，灵活地创建出较为复杂的轨迹
 
 ------
