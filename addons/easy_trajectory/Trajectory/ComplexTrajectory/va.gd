@@ -7,6 +7,18 @@ class_name VelAccelTrajectory
 var velocity : Vector2
 var acceleration : Vector2
 
+func take_param(velocity : Vector2, acceleration : Vector2 = Vector2.ZERO, ending_phase :float = -1):
+	self.velocity = velocity
+	self.acceleration = acceleration
+	self._ending_phase = ending_phase
+	
+func take_param_dict(_p : Dictionary):
+	take_param(
+		_p.velocity,
+		Vector2.ZERO if not _p.has("acceleration") else _p.acceleration,
+		-1 if not _p.has("ending_phase") else _p.ending_phase
+	)
+
 static func _static_init() -> void:
 	var validator := func(_p : Dictionary):
 		return (
@@ -27,9 +39,20 @@ static func _static_init() -> void:
 	)
 
 func _init(velocity : Vector2, acceleration : Vector2 = Vector2.ZERO, ending_phase :float = -1):
-	self.velocity = velocity
-	self.acceleration = acceleration
-	self._ending_phase = ending_phase
+	take_param(velocity,acceleration,ending_phase)
+	
+	self._resetter = Callable(take_param).bind(
+		velocity,
+		acceleration,
+		ending_phase
+	)
+	self._redefiner = func(_p : Dictionary):
+		take_param_dict(_p)
+		self._resetter = Callable(take_param).bind(
+			_p.velocity,
+			Vector2.ZERO if not _p.has("acceleration") else _p.acceleration,
+			-1 if not _p.has("ending_phase") else _p.ending_phase
+		)
 	
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:	

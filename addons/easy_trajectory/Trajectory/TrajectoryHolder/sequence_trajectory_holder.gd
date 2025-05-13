@@ -32,14 +32,20 @@ static func _static_init() -> void:
 		validator
 	)
 
+
 func _init(trajectories : Array[BaseTrajectory] = []) -> void:
-	_holder = trajectories.duplicate()
-	for item in _holder:
+
+	self._connector = func(item : BaseTrajectory):
 		item.ended.connect(
 			func():
-				ending_cnt += 1
-				current_traj += 1
+				if not ending_cnt >= _holder.size():
+					current_traj += 1				
 		)
+	super(trajectories)
+		
+	self._resetter = func():
+		current_traj = 0
+		
 
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:

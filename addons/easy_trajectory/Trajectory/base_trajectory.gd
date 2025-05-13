@@ -26,10 +26,12 @@ signal ended
 var _valid : bool = true
 var _ended : bool = false:
 	set(value):
-		ended.emit()
+		if value:
+			ended.emit()
 #endregion
 
 #region 多态注册机制
+var _meta_type : String
 static var _registry := {}
 ##合法的注册表格式如下：
 """
@@ -42,6 +44,14 @@ static var _registry := {}
 """
 #endregion
 
+#region 轨迹重置和重定义函数，子类需要进行赋值
+##重置函数，重置参数应当在对象构造时bind到此函数上
+var _resetter := func(): return
+
+##重定义函数，改变轨迹的部分参数并重置轨迹状态，在此函数中需要重新bind _resetter的参数
+var _redefiner := func(_p): return
+#endregion
+
 ##更新轨迹内部参数,调用evaluate前应先调用update
 func update(delta : float):
 	pass
@@ -49,6 +59,22 @@ func update(delta : float):
 ##给出用于实体移动的位移矢量
 func evaluate(delta : float) -> Vector2:
 	return Vector2.ZERO
+
+##轨迹重置函数
+func reset() -> void:
+	_progress = 0.0
+	_last_progress = 0.0
+	_valid = true
+	_ended = false
+	_resetter.call()
+
+##重定义函数，传入字典作为重置参数(格式类似工厂函数)
+func redefine(args : Dictionary):
+	if not _registry[_meta_type].validator.call(args):
+		push_error("EasyTrajectory: Invalid redefine parameters %s" % args)
+		return
+	_redefiner.call(args)
+	reset()
 
 static func _register(type_name : String, _constructor : Callable, _validator : Callable = func(_p): return true):
 	_registry[type_name] = {
@@ -67,6 +93,7 @@ static func create(type_name : String, param : Dictionary = {}) -> BaseTrajector
 		
 	var instance = traj_factory.constructor.call(param)
 	assert(instance is BaseTrajectory, "Class Type Check Failed")
+	instance._meta_type = type_name
 	return instance
 	
 		

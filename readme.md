@@ -41,6 +41,10 @@ var traj = BaseTrajectory.create(
 
 
 
+**建议**：总是使用工厂函数create()的方式，除非需要快速对某些轨迹形状进行测试
+
+
+
 ### 使用轨迹
 
 要使用轨迹，需要在 _process 方法或是 _physics_process 方法中进行如下操作：
@@ -56,6 +60,35 @@ func _process(delta : float):
 - evaluate(delta) 返回一个 Vector2 类型的位移矢量，与节点的position属性相加即可让节点沿轨迹移动
 
 **注意：**轨迹的坐标位置并**不是绝对**的，EasyTrajectory定义的轨迹只是定义一个轨迹的形状，轨迹的**起点**为节点开始迭代时的**自身位置**。从效果上来看，对哪个节点使用EasyTrajectoy的轨迹迭代，轨迹使用的就是该节点的**局部坐标系**
+
+
+
+### 重置与重定义轨迹
+
+- 重置轨迹至初始状态：
+
+```gdscript
+traj.reset()
+```
+
+**注**：如上所述，这并不能让被迭代的对象回到原来的位置
+
+
+
+- 重定义轨迹（以LinearTrajectory为例）：
+
+```
+traj.redefine(
+	{
+		"speed" : 50.0,
+		"direction" : 20.0
+	}
+)
+```
+
+重定义的轨迹与原轨迹类型相同，且重定义的参数只能由字典方式指定（就像工厂函数那样）
+
+**注**：在TrajectoryHolder及其子类中，子轨迹的类型在重定义时可以改变（见下文）
 
 
 
@@ -174,6 +207,25 @@ BaseTrajectory.create(
 
 ### BezierTrajectory (bezier)
 
+#### BezierUnit
+
+贝塞尔曲线的基本单元，定义如下：
+
+```gdscript
+class BezierUnit:
+	var point : Vector2 #点位置
+	var ctrl_in : Vector2 #控制向量in （可选）
+	var ctrl_out : Vector2 #控制向量out （可选）
+```
+
+在构造 BezierUnit 时，ctrl_in 和 ctrl_out 可以不指定，默认为 Vector.ZERO
+
+详细有关贝塞尔曲线的信息，请参照Godot官方文档：[贝塞尔，曲线和路径](https://docs.godotengine.org/zh-cn/4.x/tutorials/math/beziers_and_curves.html)
+
+
+
+#### Trajectory
+
 由一系列贝塞尔曲线的控制点定义的轨迹类型，具有如下属性：
 
 ```gdscript
@@ -182,28 +234,57 @@ speed : float #速率
 acceleration : float #加速度 （可选）， 默认值 0
 ```
 
-BezierTrajectory在创建时需要提供控制点列_points : Array[Vector2]作为第一个参数，此外，BezierTrajectory并没有ending_phase参数，因为贝塞尔曲线通常总是有一个确定的长度。
+BezierTrajectory在创建时：
+
+- 需要提供控制点列_points : Array作为第一个参数，其中的类型可以是：
+
+  - BezierUnit
+
+  - Vector2
+
+    - 作为 BezierUnit 的 point 属性
+
+  - Dictionary
+
+    - ```gdscript
+      {
+      	"point": Vector2(0,0),
+      	"in" : Vector2(-10,-10),
+      	"out" : Vector2(10,10)
+      }
+      ```
+
+- BezierTrajectory并没有ending_phase参数，因为贝塞尔曲线通常总是有一个确定的长度。
 
 
 
 在工厂函数中，按如下格式创建：
 
 ```gdscript
-BaseTrajectory.create(
+var traj = BaseTrajectory.create(
 		"bezier",
 		{
-			"points" : [
-				Vector2(0,0),
-				Vector2(30,40),
-				Vector2(-10,20),
-				Vector2(-60,80)
-			],
-			"speed" : 30.0
+			"speed" : 60.0,
+			"points": [
+				{
+					"point": Vector2(226,388),
+					"out" : Vector2(284.1,-42.44)
+				},
+				{
+					"point" : Vector2(267,83),
+					"in" : Vector2(17.68,137.94),
+					"out" : Vector2(-17.68,-137.9)
+				},
+				{
+					"point" : Vector2(0,0),
+					"in" : Vector2(236.9,-80.17)
+				}
+			]
 		}
 	)
 ```
 
-
+**注**：迭代对象在贝塞尔曲线上的速度完全由speed属性决定，与曲线在某点的曲率无关
 
 
 
@@ -212,6 +293,8 @@ BaseTrajectory.create(
 以下是较为特殊的轨迹类型TrajectoryHolder，它们本身不直接定义轨迹，它们包含多条各种类型的轨迹，并以某种方式将这些轨迹组合，这使得创建复杂灵活地轨迹成为可能
 
 因为TrajectoryHolder仅仅包含上述的 ”基本轨迹“，因此它们通常没有额外的属性。TrajectoryHolder中_process属性是无效的，不能通过 _process得知轨迹的迭代进程。但用户仍然可以使用ended信号来获知轨迹是否结束，当TrajectoryHolder中所有轨迹均结束时，ended信号会被发出
+
+
 
 **注：**因为EasyTrajectory效果上使用的是迭代对象的**局部坐标系**，因此TrajectoryHolder下包含的的轨迹之间无需满足例如连续等约束条件。
 
@@ -472,7 +555,124 @@ default一栏为插件的默认类型，为方便区分，请将自定义的脚�
 
 
 
+### 支持重置与重定义
+
+要支持重置与重定义功能，需要一些额外处理
+
+#### 重置
+
+重置功能函数：
+
+```gdscript
+#BaseTrajectory
+_resetter : Callable
+```
+
+赋值该属性以定义重置器，重置功能需要轨迹被创建时的原始参数，此处建议使用bind()方法绑定原始参数
+
+
+
+以LinearTrajectory为例：
+
+```gdscript
+func take_param(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1):
+	self.speed = speed
+	self.direction = direction
+	self.acceleration = acceleration
+	self._ending_phase = ending_phase
+
+func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+	...
+	self._resetter = Callable(take_param).bind(speed, direction, acceleration, ending_phase)
+	...
+```
+
+**注**：基本轨迹属性，如 _progress, _last_progress,  _valid,  _ended 不需要在重置器中维护
+
+
+
+#### 重定义
+
+重定义功能函数：
+
+```gdscript
+#BaseTrajectory
+_redefiner := func(_p): return
+```
+
+赋值该属性以定义重定义器，重定义器接受一个字典，从中提取必要参数
+
+**注**：
+
+- 你无需在_redefiner中校验字典数据，校验在调用redefine() 时自动完成
+- 在_redefiner中，请重新bind()  _resetter中的参数
+
+
+
+以LinearTrajectory为例：
+
+```gdscript
+func take_param_dict(_p : Dictionary):
+	self.speed = _p.speed
+	self.direction = _p.direction
+	self.acceleration = 0 if not _p.has("acceleration") else _p.acceleration
+	self._ending_phase = -1 if not _p.has("ending_phase") else _p.ending_phase
+	
+func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+	...
+	self._redefiner = func(_p) :
+		take_param_dict(_p)
+		self._resetter = Callable(take_param).bind(
+			_p.speed,
+			_p.direction,
+			0 if not _p.has("acceleration") else _p.acceleration,
+			-1 if not _p.has("ending_phase") else _p.ending_phase
+		)
+	...
+```
+
+
+
+### 针对TrajectoryHolder类型
+
+TrajectoryHolder类型有一个额外属性，用于在子轨迹结束时执行相应操作
+
+```gdscript
+var _connector := func(item : BaseTrajectory):
+	return
+```
+
+
+
+以SequenceTrajectoryHolder为例：
+
+```gdscript
+func _init(trajectories : Array[BaseTrajectory] = []) -> void:
+	self._connector = func(item : BaseTrajectory):
+		item.ended.connect(
+			func():
+				if not ending_cnt >= _holder.size():
+					current_traj += 1				
+		)
+	super(trajectories)
+	...
+```
+
+**注**：继承自TrajectoryHolder的类型，请一定调用**父级**（TrajectoryHolder）的 **_init()** 方法，否则会导致信号异常，轨迹无法结束
+
+
+
+TrajectoryHolder 重载了reset() 和 redefine() 方法，能正确的处理ended信号连接和子轨迹的构造，因此除非特殊需求，无需重新编写_resetter 和 _redefiner。如果定义了 _redefiner, 也无需重新bind() _resetter
+
+
+
+在redefine() 方法中，_redefiner会在信号连接处理完毕后，reset() 方法之前被调用
+
+------
+
 至此，我们自定义的轨迹类型应当可以像默认类型那样工作了，恭喜~
+
+------
 
 
 
@@ -480,7 +680,7 @@ default一栏为插件的默认类型，为方便区分，请将自定义的脚�
 
 感谢能读到这里，这款插件仍然处于初期开发阶段，仍有些功能不完善，也有一些实现方式比较粗糙，后续会更新以下功能：
 
-- 轨迹重置（reset）和参数重定义（redefine）
+- 参数突变（轨迹运行时更改参数值，保留目前的状态）
 - 集成的轨迹对象池，用以支持诸如弹幕地狱游戏频繁，大量创建轨迹的需求
 
 

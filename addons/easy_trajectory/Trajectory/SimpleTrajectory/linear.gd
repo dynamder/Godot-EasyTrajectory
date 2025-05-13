@@ -37,12 +37,35 @@ static func _static_init() -> void:
 			),
 		validator
 	)
-
-func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+##属性更新函数
+func take_param(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1):
 	self.speed = speed
 	self.direction = direction
 	self.acceleration = acceleration
 	self._ending_phase = ending_phase
+
+func take_param_dict(_p : Dictionary):
+	self.speed = _p.speed
+	self.direction = _p.direction
+	self.acceleration = 0 if not _p.has("acceleration") else _p.acceleration
+	self._ending_phase = -1 if not _p.has("ending_phase") else _p.ending_phase
+
+##TODO: resetter and redefiner
+func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+	take_param(speed, direction, acceleration, ending_phase)
+	
+	#resetter and redefiner
+	self._resetter = Callable(take_param).bind(speed, direction, acceleration, ending_phase)	
+	self._redefiner = func(_p) :
+		take_param_dict(_p)
+		self._resetter = Callable(take_param).bind(
+			_p.speed,
+			_p.direction,
+			0 if not _p.has("acceleration") else _p.acceleration,
+			-1 if not _p.has("ending_phase") else _p.ending_phase
+		)
+		
+	
 	
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:

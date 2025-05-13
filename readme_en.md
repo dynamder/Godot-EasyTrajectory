@@ -39,6 +39,12 @@ var traj = BaseTrajectory.create(
 
 When using the factory function, the first parameter is the trajectory type, and the second is a dictionary of parameters matching the trajectory's property names.
 
+
+
+**Suggestion**: Always use the create() factory method, unless you need to quickly test some trajectory prototypes
+
+
+
 ### Using Trajectories
 
 In `_process` or `_physics_process`:
@@ -53,6 +59,33 @@ func _process(delta : float):
 - `evaluate(delta)` returns a Vector2 displacement to apply to the node's position.
 
 **Note:** Trajectories are defined in the **local coordinate system** of the node using them. The starting point is the node's initial position.
+
+
+
+### Reset and Redefine trajectory
+
+- reset the trajectory to the initial state
+
+  ```gdscript
+  traj.reset()
+  ```
+
+  **Note**: As mentioned above (local coordinate system), the reset() method can't reset the node's position
+
+- redefine trajectory (Example for redefining LinearTrajectory)
+
+  ```gdscript
+  traj.redefine(
+  	{
+  		"speed" : 50.0,
+  		"direction" : 20.0
+  	}
+  )
+  ```
+
+  the redefined trajectory has the same type of the original trajectory, and the redefine() parameter can only be given in Dictionary (like what we do in the factory function)
+
+  **Note**： In TrajectoryHolder and its subclasses, the type of sub trajectory can be changed when redefining (will mention in the following paragraph)
 
 ------
 
@@ -138,30 +171,85 @@ BaseTrajectory.create(
 ```
 
 ### BezierTrajectory (bezier)
+
+#### BezierUnit
+
+the basic unit of a Bezier curve, defined as followed:
+
+```gdscript
+class BezierUnit:
+	var point : Vector2 #position
+	var ctrl_in : Vector2 #control vector in （optional）
+	var ctrl_out : Vector2 #control vector out （optional）
+```
+
+When construcing BezierUnit, the *ctrl_in* and the *ctrl_out* can be left empty, and the default value is Vector.ZERO
+
+For more information about the bezier curve, please refer to the Godot Official Document: [Beziers, curves and paths](https://docs.godotengine.org/en/stable/tutorials/math/beziers_and_curves.html)
+
+
+
+#### Trajectory
+
 Bezier curve trajectory:
+
 ```gdscript
 _curve : Curve2D # Bezier curve (auto-generated)
 speed : float # Speed
 acceleration : float # Acceleration (optional, default 0)
 ```
 
+When creating:
+
+- point array *_points : Array* should be provided, the following type is allowed:
+
+  - BezierUnit
+
+  - Vector2
+
+    - treated as the *point* attribute in BezierUnit
+
+  - Dictionary
+
+    - ```gdscript
+      {
+      	"point": Vector2(0,0),
+      	"in" : Vector2(-10,-10),
+      	"out" : Vector2(10,10)
+      }
+      ```
+
+- There is no *ending_phase* as Bezier curve always has an finite length
+
+
+
 Factory example (requires `points` array):
+
 ```gdscript
-BaseTrajectory.create(
-    "bezier",
-    {
-        "points" : [
-            Vector2(0,0),
-            Vector2(30,40),
-            Vector2(-10,20),
-            Vector2(-60,80)
-        ],
-        "speed" : 30.0
-    }
-)
+var traj = BaseTrajectory.create(
+		"bezier",
+		{
+			"speed" : 60.0,
+			"points": [
+				{
+					"point": Vector2(226,388),
+					"out" : Vector2(284.1,-42.44)
+				},
+				{
+					"point" : Vector2(267,83),
+					"in" : Vector2(17.68,137.94),
+					"out" : Vector2(-17.68,-137.9)
+				},
+				{
+					"point" : Vector2(0,0),
+					"in" : Vector2(236.9,-80.17)
+				}
+			]
+		}
+	)
 ```
 
-
+**Note**: the node's speed on the BezierTrajectory is completely determined by the *speed* attribute, and has no relation with the point's curvature.
 
 ### TrajectoryHolder Types
 
@@ -404,6 +492,119 @@ For the sake of readability, please add your custom script in the "custom" secti
 
 
 
+### Reset and Redefine Support
+
+#### Reset
+
+the reset function:
+
+```gdscript
+#BaseTrajectory
+_resetter : Callable
+```
+
+assign to the *_resetter* to enable reset, remember to **bind()** the original parameters when creating
+
+
+
+Example (LinearTrajectory)
+
+```gdscript
+func take_param(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1):
+	self.speed = speed
+	self.direction = direction
+	self.acceleration = acceleration
+	self._ending_phase = ending_phase
+
+func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+	...
+	self._resetter = Callable(take_param).bind(speed, direction, acceleration, ending_phase)
+	...
+```
+
+**Note**: you don't need to maintain the basic attributes such as _progress, _last_progress, _valid and _ended in the _resetter
+
+
+
+#### Redefine
+
+the redefine function:
+
+```gdscript
+#BaseTrajectory
+_redefiner := func(_p): return
+```
+
+assign to the *_redefiner* to enable redefine, it will accept a dictionary, and extract necessary parameters from it
+
+**Note**:
+
+- Dictionary parameters **don't need** to be validated in *_redefiner*, it will be handled automatically
+- remember to bind() the new parameters to *_resetter* in the *_redefiner*
+
+
+
+Example (LinearTrajectory)
+
+```gdscript
+func take_param_dict(_p : Dictionary):
+	self.speed = _p.speed
+	self.direction = _p.direction
+	self.acceleration = 0 if not _p.has("acceleration") else _p.acceleration
+	self._ending_phase = -1 if not _p.has("ending_phase") else _p.ending_phase
+	
+func _init(speed : float, direction : float, acceleration : float = 0, ending_phase : float = -1) -> void:
+	...
+	self._redefiner = func(_p) :
+		take_param_dict(_p)
+		self._resetter = Callable(take_param).bind(
+			_p.speed,
+			_p.direction,
+			0 if not _p.has("acceleration") else _p.acceleration,
+			-1 if not _p.has("ending_phase") else _p.ending_phase
+		)
+	...
+```
+
+
+
+### For TrajectoryHolder
+
+TrajectoryHolder has an additional attribute to handle the *ended* signal emitted by the sub trajectory
+
+```gdscript
+var _connector := func(item : BaseTrajectory):
+	return
+```
+
+
+
+Example (SequenceTrajectoryHolder):
+
+```gdscript
+func _init(trajectories : Array[BaseTrajectory] = []) -> void:
+	self._connector = func(item : BaseTrajectory):
+		item.ended.connect(
+			func():
+				if not ending_cnt >= _holder.size():
+					current_traj += 1				
+		)
+	super(trajectories)
+	...
+```
+
+**Note**: Remember to call the *_init* method in the super class if directly or indirectly extended from TrajectoryHolder, or the signal handling may not function correctly.
+
+
+
+TrajectoryHolder has a override version of *reset* and *redefine* method, so you don't need to handle *_resetter* and *_redefiner*, and if *_redefiner* is defined, there is no need to bind() the parameters to *_resetter*
+
+
+
+In the override redefine(), the *_redefiner* will be called after the *ended* signal connected, and before the reset() method is called
+
+------
+
 Now we can use our custom trajectory type just like the build-in ones
 
 
@@ -411,7 +612,7 @@ Now we can use our custom trajectory type just like the build-in ones
 ## Some words
 
 Upcoming features:
-- Trajectory resetting/redefining
+- parameter mutate (change but not reset the trajectory)
 - Object pooling for bullet-hell scenarios
 
 Thanks for using and support EasyTrajectory! ღ( ´･ᴗ･` )

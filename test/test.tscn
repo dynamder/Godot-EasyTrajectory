@@ -1,12 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://mb6c3wn4o7d1"]
+[gd_scene load_steps=4 format=3 uid="uid://mb6c3wn4o7d1"]
 
 [ext_resource type="Script" uid="uid://wnnse12jqgxx" path="res://test/test.gd" id="1_8a8pi"]
 [ext_resource type="Texture2D" uid="uid://bfx3xhyu5vuv0" path="res://icon.svg" id="2_65205"]
 
+[sub_resource type="Curve2D" id="Curve2D_8a8pi"]
+_data = {
+"points": PackedVector2Array(-284.132, 42.443, 284.132, -42.443, 226, 388, 17.6846, 137.94, -17.6846, -137.94, 267, 83, 236.974, -80.1701, -236.974, 80.1701, 0, 0)
+}
+point_count = 3
+
 [node name="Test" type="Node2D"]
 script = ExtResource("1_8a8pi")
 
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_8a8pi")
+
+[node name="Line2D" type="Line2D" parent="."]
+joint_mode = 2
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(564, 171)
+position = Vector2(659, 344)
 scale = Vector2(0.32, 0.32)
 texture = ExtResource("2_65205")
