@@ -1,0 +1,599 @@
+[gd_scene load_steps=8 format=3 uid="uid://cuuveqgkly4ic"]
+
+[ext_resource type="Script" uid="uid://bod063rxtyj8s" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/test.gd" id="1_6uqi0"]
+[ext_resource type="Script" uid="uid://c4o7n06ua3e2r" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/initial_pos_marker_2d.gd" id="1_8uh7m"]
+[ext_resource type="Texture2D" uid="uid://bfx3xhyu5vuv0" path="res://icon.svg" id="1_37kl0"]
+[ext_resource type="Script" uid="uid://cjovm24jbdk3c" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/linear_button.gd" id="4_ppyta"]
+[ext_resource type="Script" uid="uid://cv6o0nq5s2wqu" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/circle_button.gd" id="5_ykrsh"]
+[ext_resource type="Script" uid="uid://ecpn0w2jra3a" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/vel_accel_button.gd" id="6_g14j6"]
+[ext_resource type="Script" uid="uid://b4ohhaatoeucn" path="res://addons/easy_trajectory/examples/TrajectoryDemonstration/Scripts/bezier_button.gd" id="7_vbegm"]
+
+[node name="Test" type="Node2D"]
+script = ExtResource("1_6uqi0")
+
+[node name="InitialPosMarker2D" type="Marker2D" parent="."]
+position = Vector2(692, 353)
+script = ExtResource("1_8uh7m")
+
+[node name="MoveObject" type="Sprite2D" parent="."]
+position = Vector2(692, 353)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_37kl0")
+
+[node name="Line2D" type="Line2D" parent="."]
+width = 4.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control" type="Control" parent="CanvasLayer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="ResetButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "重置位置"
+
+[node name="Control2" type="Control" parent="CanvasLayer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="EndLabel" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/Control2"]
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+offset_left = 103.0
+offset_right = 183.0
+offset_bottom = 60.0
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.1, 1, 0, 1)
+text = "轨迹已结束"
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 40
+
+[node name="Linear" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="LinearButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "直线"
+script = ExtResource("4_ppyta")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear"]
+layout_mode = 2
+
+[node name="Speed" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpeedSpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Speed"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Speed"]
+layout_mode = 2
+text = "速度"
+
+[node name="Direction" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer"]
+layout_mode = 2
+
+[node name="DirectionSpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Direction"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+value = 45.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Direction"]
+layout_mode = 2
+text = "方向"
+
+[node name="Acceleration" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpeedSpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Acceleration"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 20.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/Acceleration"]
+layout_mode = 2
+text = "加速度"
+
+[node name="EndingPhase" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpeedSpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/EndingPhase"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -1.0
+max_value = 500.0
+value = -1.0
+allow_greater = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/VBoxContainer/EndingPhase"]
+layout_mode = 2
+text = "结束状态"
+
+[node name="Circle" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CircleButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "圆"
+script = ExtResource("5_ykrsh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle"]
+layout_mode = 2
+
+[node name="Radius" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/Radius"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/Radius"]
+layout_mode = 2
+text = "半径"
+
+[node name="Angle" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/Angle"]
+layout_mode = 2
+max_value = 360.0
+value = 30.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/Angle"]
+layout_mode = 2
+text = "初相位"
+
+[node name="AngSpeed" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/AngSpeed"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 120.0
+value = 120.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/AngSpeed"]
+layout_mode = 2
+text = "角速度"
+
+[node name="AngAccel" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/AngAccel"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/AngAccel"]
+layout_mode = 2
+text = "角加速度"
+
+[node name="EndingPhase" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/EndingPhase"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -1.0
+max_value = 1000.0
+value = 480.0
+allow_greater = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/VBoxContainer/EndingPhase"]
+layout_mode = 2
+text = "结束状态"
+
+[node name="VelAccel" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="VelAccelButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "速度-加速度"
+script = ExtResource("6_g14j6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel"]
+layout_mode = 2
+
+[node name="VelocityX" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/VelocityX"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/VelocityX"]
+layout_mode = 2
+text = "速度x"
+
+[node name="VelocityY" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/VelocityY"]
+layout_mode = 2
+max_value = 360.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/VelocityY"]
+layout_mode = 2
+text = "速度y"
+
+[node name="AccelerationX" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/AccelerationX"]
+layout_mode = 2
+size_flags_horizontal = 4
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/AccelerationX"]
+layout_mode = 2
+text = "加速度x"
+
+[node name="AccelerationY" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/AccelerationY"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 30.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/AccelerationY"]
+layout_mode = 2
+text = "加速度y"
+
+[node name="EndingPhase" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/EndingPhase"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -1.0
+max_value = 1000.0
+value = 430.0
+allow_greater = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VBoxContainer/EndingPhase"]
+layout_mode = 2
+text = "结束状态"
+
+[node name="Bezier" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="BezierButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "贝塞尔"
+script = ExtResource("7_vbegm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier"]
+layout_mode = 2
+
+[node name="Speed" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Speed"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 60.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Speed"]
+layout_mode = 2
+text = "速度"
+
+[node name="Acceleration" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Acceleration"]
+layout_mode = 2
+size_flags_horizontal = 4
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Acceleration"]
+layout_mode = 2
+text = "加速度"
+
+[node name="Control3" type="Control" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Pos1x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos1x"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 226.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos1x"]
+layout_mode = 2
+text = "点1x"
+
+[node name="Pos1y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos1y"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 388.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos1y"]
+layout_mode = 2
+text = "点1y"
+
+[node name="Out1x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out1x"]
+layout_mode = 2
+max_value = 360.0
+value = 284.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out1x"]
+layout_mode = 2
+text = "出控制1x"
+
+[node name="Out1y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out1y"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 360.0
+value = -42.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out1y"]
+layout_mode = 2
+text = "出控制1y"
+
+[node name="Control" type="Control" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Pos2x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos2x"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 267.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos2x"]
+layout_mode = 2
+text = "点2x"
+
+[node name="Pos2y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos2y"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 83.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos2y"]
+layout_mode = 2
+text = "点2y"
+
+[node name="In2x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In2x"]
+layout_mode = 2
+size_flags_horizontal = 4
+value = 18.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In2x"]
+layout_mode = 2
+text = "入控制2x"
+
+[node name="In2y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In2y"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 138.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In2y"]
+layout_mode = 2
+text = "入控制2y"
+
+[node name="Out2x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out2x"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -100.0
+max_value = 1000.0
+value = -18.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out2x"]
+layout_mode = 2
+text = "出控制2x"
+
+[node name="Out2y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out2y"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -1000.0
+max_value = 1000.0
+value = -138.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Out2y"]
+layout_mode = 2
+text = "出控制2y"
+
+[node name="Control2" type="Control" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Pos3x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos3x"]
+layout_mode = 2
+size_flags_horizontal = 4
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos3x"]
+layout_mode = 2
+text = "点3x"
+
+[node name="Pos3y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos3y"]
+layout_mode = 2
+size_flags_horizontal = 4
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/Pos3y"]
+layout_mode = 2
+text = "点3y"
+
+[node name="In3x" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In3x"]
+layout_mode = 2
+size_flags_horizontal = 4
+max_value = 1000.0
+value = 237.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In3x"]
+layout_mode = 2
+text = "入控制3x"
+
+[node name="In3y" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In3y"]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = -100.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/VBoxContainer/In3y"]
+layout_mode = 2
+text = "入控制3y"
+
+[node name="Sequence" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="SequenceButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Sequence"]
+layout_mode = 2
+text = "分段轨迹"
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Sequence"]
+layout_mode = 2
+text = "直线 + 圆"
+
+[node name="Blender" type="HBoxContainer" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="BlenderButton" type="Button" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Blender"]
+layout_mode = 2
+text = "合成轨迹"
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Blender"]
+layout_mode = 2
+text = "直线 + 圆"
+
+[node name="Control2" type="Control" parent="CanvasLayer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Linear/LinearButton" to="." method="_on_linear_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Circle/CircleButton" to="." method="_on_circle_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/VelAccel/VelAccelButton" to="." method="_on_vel_accel_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bezier/BezierButton" to="." method="_on_bezier_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Sequence/SequenceButton" to="." method="_on_sequence_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Blender/BlenderButton" to="." method="_on_blender_button_pressed"]
