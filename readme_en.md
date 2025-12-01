@@ -39,6 +39,8 @@ var traj = BaseTrajectory.create(
 
 When using the factory function, the first parameter is the trajectory type, and the second is a dictionary of parameters matching the trajectory's property names.
 
+Argument dictionary helper class can be used to construct the dictionary.
+
 
 
 **Suggestion**: Always use the create() factory method, unless you need to quickly test some trajectory prototypes
@@ -87,6 +89,12 @@ func _process(delta : float):
 
   **Note**： In TrajectoryHolder and its subclasses, the type of sub trajectory can be changed when redefining (will mention in the following paragraph)
 
+### Embed Transform
+
+There is an Transform2D attribute "embed_transform" in BaseTrajectory, it will transform the trajectory accordingly.
+
+This transform is lazy, only when evaluate() is called, the returned vector will be transformed.
+
 ------
 
 ## Built-in Trajectory Types
@@ -130,7 +138,27 @@ BaseTrajectory.create(
 	)
 ```
 
+Or use argument dictionary builder:
+
+```gdscript
+var linear_traj_dict := LinearTrajDict.new().set_speed_accel(
+		10
+	).set_direction(
+		20
+	).set_ending_phase(
+		60
+	).build()
+
+BaseTrajectory.create(
+	"linear",
+	linear_traj_dict
+)
+```
+
+
+
 ### CircleTrajectory (circle)
+
 Circular trajectory (angles in degrees):
 ```gdscript
 radius : float # Radius
@@ -152,6 +180,7 @@ BaseTrajectory.create(
 ```
 
 ### VelAccelTrajectory (velaccel)
+
 Defined by velocity and acceleration vectors:
 ```gdscript
 velocity : Vector2 # Velocity

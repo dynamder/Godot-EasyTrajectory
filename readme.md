@@ -37,7 +37,9 @@ var traj = BaseTrajectory.create(
 	)
 ```
 
-在使用工厂函数时，第一个参数为轨迹类型，第二个参数时轨迹的参数，键名与轨迹的对应属性名相同
+在使用工厂函数时，第一个参数为轨迹类型，第二个参数称为参数字典，为轨迹的参数，键名与轨迹的对应属性名相同。
+
+参数字典可以使用各轨迹的辅助构造类构建。
 
 
 
@@ -77,7 +79,7 @@ traj.reset()
 
 - 重定义轨迹（以LinearTrajectory为例）：
 
-```
+```gdscript
 traj.redefine(
 	{
 		"speed" : 50.0,
@@ -93,6 +95,12 @@ traj.redefine(
 
 
 EasyTrajectory提供了集中默认集成的轨迹类型，通过这些轨迹类型及其组合，能满足大部分的基本功能，下面将介绍EasyTrajectory中自带的轨迹类型
+
+### 内置变换
+
+BaseTrajectory中有一个类型为Transform2D的属性embed_transform，赋值该属性会让轨迹按此Transform2D进行变换。
+
+这一变换时惰性的，只有evaluate方法被调用时，返回的向量会被施以此变换。
 
 ------
 
@@ -151,6 +159,23 @@ BaseTrajectory.create(
 			"ending_phase" : 60.0
 		}
 	)
+```
+
+或者使用参数字典（命名规范一致，下文不再赘述）：
+
+```gdscript
+var linear_traj_dict := LinearTrajDict.new().set_speed_accel(
+		10
+	).set_direction(
+		20
+	).set_ending_phase(
+		60
+	).build()
+
+BaseTrajectory.create(
+	"linear",
+	linear_traj_dict
+)
 ```
 
 
