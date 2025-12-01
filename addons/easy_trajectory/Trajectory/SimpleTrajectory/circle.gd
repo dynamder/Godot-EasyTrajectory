@@ -80,7 +80,7 @@ func _init(radius : float, angular_speed : float, angle : float = 0, angular_acc
 	
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:	
-		return radius * (Vector2(cos(angle), sin(angle)) - Vector2(cos(_last_phase), sin(_last_phase)))
+		return self.embed_transform * (radius * (Vector2(cos(angle), sin(angle)) - Vector2(cos(_last_phase), sin(_last_phase))))
 	else:
 		return Vector2.ZERO
 

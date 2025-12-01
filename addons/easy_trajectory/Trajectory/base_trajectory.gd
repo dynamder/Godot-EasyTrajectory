@@ -30,6 +30,10 @@ var _ended : bool = false:
 			ended.emit()
 #endregion
 
+#region 内置变换
+var embed_transform: Transform2D = Transform2D.IDENTITY
+#endregion
+
 #region 多态注册机制
 var _meta_type : String
 static var _registry := {}
@@ -59,6 +63,10 @@ func update(delta : float):
 ##给出用于实体移动的位移矢量
 func evaluate(delta : float) -> Vector2:
 	return Vector2.ZERO
+
+##设置内置轨迹变换
+func set_embed_transform(transform_2d: Transform2D):
+	self.embed_transform = transform_2d
 
 ##轨迹重置函数
 func reset() -> void:

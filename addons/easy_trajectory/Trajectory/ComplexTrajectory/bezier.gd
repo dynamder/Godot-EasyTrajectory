@@ -121,7 +121,7 @@ func _bezier(t: float) -> Vector2:
 
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:
-		return _bezier(_progress) - _bezier(_last_progress)
+		return self.embed_transform * (_bezier(_progress) - _bezier(_last_progress))
 	else:
 		return Vector2.ZERO
 

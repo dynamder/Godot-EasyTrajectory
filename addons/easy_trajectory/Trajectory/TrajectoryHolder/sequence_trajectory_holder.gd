@@ -49,7 +49,7 @@ func _init(trajectories : Array[BaseTrajectory] = []) -> void:
 
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:
-		return _holder[current_traj].evaluate(delta)
+		return self.embed_transform * (_holder[current_traj].evaluate(delta))
 	else:
 		return Vector2.ZERO
 		

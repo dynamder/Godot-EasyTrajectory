@@ -33,7 +33,7 @@ func evaluate(delta : float) -> Vector2:
 		var sum_vec := Vector2.ZERO
 		for item in _holder:
 			sum_vec += item.evaluate(delta)
-		return sum_vec
+		return  self.embed_transform * sum_vec
 	else:
 		return Vector2.ZERO
 

@@ -69,7 +69,7 @@ func _init(speed : float, direction : float, acceleration : float = 0, ending_ph
 	
 func evaluate(delta : float) -> Vector2:
 	if not _ended and _valid:
-		return speed * delta * _vec_direction
+		return self.embed_transform * (speed * delta * _vec_direction)
 	else:
 		return Vector2.ZERO
 			
