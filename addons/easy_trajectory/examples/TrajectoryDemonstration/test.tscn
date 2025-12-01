@@ -54,7 +54,7 @@ size_flags_vertical = 4
 [node name="EndLabel" type="Label" parent="CanvasLayer/HBoxContainer/VBoxContainer/Control2"]
 visible = false
 custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
+layout_mode = 0
 offset_left = 103.0
 offset_right = 183.0
 offset_bottom = 60.0

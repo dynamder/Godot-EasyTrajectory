@@ -35,14 +35,27 @@ func _on_reset_button_pressed() -> void:
 
 
 func _on_linear_button_pressed() -> void:
+	
+	#使用参数字典构建器
+	var linear_traj_dict := LinearTrajDict.new().set_speed_accel(
+		float(linear_button.speed.get_line_edit().text),
+		float(linear_button.acceleration.get_line_edit().text)
+	).set_direction(
+		float(linear_button.direction.get_line_edit().text)
+	).set_ending_phase(
+		float(linear_button.ending_phase.get_line_edit().text)
+	).build()
+	
 	traj = BaseTrajectory.create(
 		"linear",
-		{
-			"speed" : float(linear_button.speed.get_line_edit().text),
-			"direction" : float(linear_button.direction.get_line_edit().text),
-			"acceleration" : float(linear_button.acceleration.get_line_edit().text),
-			"ending_phase" : float(linear_button.ending_phase.get_line_edit().text)
-		}
+		#直接初始化字典方式
+		#{
+			#"speed" : float(linear_button.speed.get_line_edit().text),
+			#"direction" : float(linear_button.direction.get_line_edit().text),
+			#"acceleration" : float(linear_button.acceleration.get_line_edit().text),
+			#"ending_phase" : float(linear_button.ending_phase.get_line_edit().text)
+		#}
+		linear_traj_dict
 	)
 	traj.ended.connect(connector)
 	end_label.hide()
@@ -50,15 +63,30 @@ func _on_linear_button_pressed() -> void:
 
 
 func _on_circle_button_pressed() -> void:
+	
+	#使用参数字典构建器
+	var circle_traj_dict := CircleTrajDict.new().set_radius(
+		float(circle_button.radius.get_line_edit().text)
+	).set_angle(
+		float(circle_button.angle.get_line_edit().text)
+	).set_ang_speed_accel(
+		float(circle_button.angular_speed.get_line_edit().text),
+		float(circle_button.angular_acceleration.get_line_edit().text)
+	).set_ending_phase(
+		float(circle_button.ending_phase.get_line_edit().text)
+	).build()
+	
 	traj = BaseTrajectory.create(
 		"circle",
-		{
-			"radius": float(circle_button.radius.get_line_edit().text),
-			"angle": float(circle_button.angle.get_line_edit().text),
-			"angular_speed" : float(circle_button.angular_speed.get_line_edit().text),
-			"angular_acceleration" : float(circle_button.angular_acceleration.get_line_edit().text),
-			"ending_phase" : float(circle_button.ending_phase.get_line_edit().text)
-		}
+		#直接初始化字典方式
+		#{
+			#"radius": float(circle_button.radius.get_line_edit().text),
+			#"angle": float(circle_button.angle.get_line_edit().text),
+			#"angular_speed" : float(circle_button.angular_speed.get_line_edit().text),
+			#"angular_acceleration" : float(circle_button.angular_acceleration.get_line_edit().text),
+			#"ending_phase" : float(circle_button.ending_phase.get_line_edit().text)
+		#}
+		circle_traj_dict
 	)
 	traj.ended.connect(connector)
 	end_label.hide()
@@ -66,19 +94,37 @@ func _on_circle_button_pressed() -> void:
 
 
 func _on_vel_accel_button_pressed() -> void:
+	
+	#使用参数字典构建器
+	var va_traj_dict := VaTrajDict.new().set_vel(
+		Vector2(
+			float(va_button.vx.get_line_edit().text),
+			float(va_button.vy.get_line_edit().text)
+		)
+	).set_accel(
+		Vector2(
+			float(va_button.ax.get_line_edit().text),
+			float(va_button.ay.get_line_edit().text)
+		)
+	).set_ending_phase(
+		float(va_button.ending_phase.get_line_edit().text)
+	).build()
+	
 	traj = BaseTrajectory.create(
 		"velaccel",
-		{
-			"velocity": Vector2(
-				float(va_button.vx.get_line_edit().text),
-				float(va_button.vy.get_line_edit().text)
-			),
-			"acceleration": Vector2(
-				float(va_button.ax.get_line_edit().text),
-				float(va_button.ay.get_line_edit().text)
-			),
-			"ending_phase": float(va_button.ending_phase.get_line_edit().text)
-		}
+		#直接初始化字典方式
+		#{
+			#"velocity": Vector2(
+				#float(va_button.vx.get_line_edit().text),
+				#float(va_button.vy.get_line_edit().text)
+			#),
+			#"acceleration": Vector2(
+				#float(va_button.ax.get_line_edit().text),
+				#float(va_button.ay.get_line_edit().text)
+			#),
+			#"ending_phase": float(va_button.ending_phase.get_line_edit().text)
+		#}
+		va_traj_dict
 	)
 	traj.ended.connect(connector)
 	end_label.hide()
@@ -87,48 +133,94 @@ func _on_vel_accel_button_pressed() -> void:
 
 func _on_bezier_button_pressed() -> void:
 	move_object.position.y += 170
+	
+	#使用参数字典构建器
+	var bezier_dict := BezierTrajDict.new().set_points(
+		[
+			{
+				"point": Vector2(
+					float(bezier_button.pos1x.get_line_edit().text),
+					float(bezier_button.pos1y.get_line_edit().text)
+				),
+				"out": Vector2(
+					float(bezier_button.out1x.get_line_edit().text),
+					float(bezier_button.out1y.get_line_edit().text)
+				)
+			},
+			{
+				"point": Vector2(
+					float(bezier_button.pos2x.get_line_edit().text),
+					float(bezier_button.pos2y.get_line_edit().text)
+				),
+				"in": Vector2(
+					float(bezier_button.in2x.get_line_edit().text),
+					float(bezier_button.in2y.get_line_edit().text)
+				),
+				"out": Vector2(
+					float(bezier_button.out2x.get_line_edit().text),
+					float(bezier_button.out2y.get_line_edit().text)
+				)
+			},
+			{
+				"point": Vector2(
+					float(bezier_button.pos3x.get_line_edit().text),
+					float(bezier_button.pos3y.get_line_edit().text)
+				),
+				"in": Vector2(
+					float(bezier_button.in3x.get_line_edit().text),
+					float(bezier_button.in3y.get_line_edit().text)
+				)
+			}
+		]
+	).set_speed_accel(
+		float(bezier_button.speed.get_line_edit().text),
+		float(bezier_button.acceleration.get_line_edit().text)
+	).build()
+	
 	traj = BaseTrajectory.create(
 		"bezier",
-		{
-			"speed": float(bezier_button.speed.get_line_edit().text),
-			"acceleration" : float(bezier_button.acceleration.get_line_edit().text),
-			"points": [
-				{
-					"point": Vector2(
-						float(bezier_button.pos1x.get_line_edit().text),
-						float(bezier_button.pos1y.get_line_edit().text)
-					),
-					"out": Vector2(
-						float(bezier_button.out1x.get_line_edit().text),
-						float(bezier_button.out1y.get_line_edit().text)
-					)
-				},
-				{
-					"point": Vector2(
-						float(bezier_button.pos2x.get_line_edit().text),
-						float(bezier_button.pos2y.get_line_edit().text)
-					),
-					"in": Vector2(
-						float(bezier_button.in2x.get_line_edit().text),
-						float(bezier_button.in2y.get_line_edit().text)
-					),
-					"out": Vector2(
-						float(bezier_button.out2x.get_line_edit().text),
-						float(bezier_button.out2y.get_line_edit().text)
-					)
-				},
-				{
-					"point": Vector2(
-						float(bezier_button.pos3x.get_line_edit().text),
-						float(bezier_button.pos3y.get_line_edit().text)
-					),
-					"in": Vector2(
-						float(bezier_button.in3x.get_line_edit().text),
-						float(bezier_button.in3y.get_line_edit().text)
-					)
-				}
-			]
-		}
+		#直接初始化字典方式
+		#{
+			#"speed": float(bezier_button.speed.get_line_edit().text),
+			#"acceleration" : float(bezier_button.acceleration.get_line_edit().text),
+			#"points": [
+				#{
+					#"point": Vector2(
+						#float(bezier_button.pos1x.get_line_edit().text),
+						#float(bezier_button.pos1y.get_line_edit().text)
+					#),
+					#"out": Vector2(
+						#float(bezier_button.out1x.get_line_edit().text),
+						#float(bezier_button.out1y.get_line_edit().text)
+					#)
+				#},
+				#{
+					#"point": Vector2(
+						#float(bezier_button.pos2x.get_line_edit().text),
+						#float(bezier_button.pos2y.get_line_edit().text)
+					#),
+					#"in": Vector2(
+						#float(bezier_button.in2x.get_line_edit().text),
+						#float(bezier_button.in2y.get_line_edit().text)
+					#),
+					#"out": Vector2(
+						#float(bezier_button.out2x.get_line_edit().text),
+						#float(bezier_button.out2y.get_line_edit().text)
+					#)
+				#},
+				#{
+					#"point": Vector2(
+						#float(bezier_button.pos3x.get_line_edit().text),
+						#float(bezier_button.pos3y.get_line_edit().text)
+					#),
+					#"in": Vector2(
+						#float(bezier_button.in3x.get_line_edit().text),
+						#float(bezier_button.in3y.get_line_edit().text)
+					#)
+				#}
+			#]
+		#}
+		bezier_dict
 	)
 	traj.ended.connect(connector)
 	end_label.hide()
